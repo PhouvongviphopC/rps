@@ -1,42 +1,61 @@
-// your JavaScript file
-const container = document.querySelector("#container");
+function getComputerChoice () {
+    const choices = ['rock', 'paper', 'scissors'];
+    const randomIndex = Math.floor(Math.random() * choices.length);
+    return choices[randomIndex];
+}
 
-const content = document.createElement("div");
 
-content.classList.add("content");
-content.textContent = "This is the glorious text-content!";
-container.appendChild(content);
+function getHumanChoice () {
+    const choices = ['rock', 'paper', 'scissors'];
+    const choice = prompt('Enter rock, paper, or scissors:');
+    if (choices.includes(choice)) {
+        return choice;
+    } else {
+        alert('Invalid choice. Please try again.');
+        return getHumanChoice();
+    }
+}
 
-const redParagraph = document.createElement("p");
-redParagraph.classList.add("red");
-redParagraph.textContent = "Hey I'm red!";
-redParagraph.style.color = "red";
-container.appendChild(redParagraph);
 
-const blueHeader = document.createElement("h3");
-blueHeader.classList.add("blue");
-blueHeader.textContent = "I'm a blue h3!";
-blueHeader.style.color = "blue";
-container.appendChild(blueHeader);
+let humanScore = 0;
+let computerScore = 0;
 
-const pinkDiv = document.createElement("div");
-pinkDiv.classList.add("pink");
-pinkDiv.style.backgroundColor = "pink";
-pinkDiv.style.border = "2px solid black";
-container.appendChild(pinkDiv);
+function playRound (humanChoice, computerChoice) {
+    if (humanChoice === computerChoice) {
+        return `It\'s a tie! ${humanChoice} vs ${computerChoice}`;
+    } else if (
+        (humanChoice === 'rock' && computerChoice === 'scissors') ||
+        (humanChoice === 'paper' && computerChoice === 'rock') ||
+        (humanChoice === 'scissors' && computerChoice === 'paper')
+    ) {
+        humanScore++;
+        return `You win! ${humanChoice} beats ${computerChoice}.`;
+    } else {
+        computerScore++;
+        return `You lose! ${computerChoice} beats ${humanChoice}.`;
+    }
+}
 
-const nestedHeader = document.createElement("h1");
-nestedHeader.textContent = "I'm in a div";
-pinkDiv.appendChild(nestedHeader);
-const nestedParagraph = document.createElement("p");
-nestedParagraph.textContent = "ME TOO!";
-pinkDiv.appendChild(nestedParagraph);
+function playGame() {
+    for (let i = 0; i < 5; i++) {
+        const humanSelection = getHumanChoice();
+        const computerSelection = getComputerChoice();
+        console.log(playRound(humanSelection, computerSelection));
+        console.log(`Score: You ${humanScore} - ${computerScore} Computer`);
+    }
 
-const buttons = document.querySelectorAll("button");
+    if (humanScore > computerScore) {
+        console.log('Congratulations! You win the game!');
+    } else if (humanScore < computerScore) {
+        console.log('Sorry! You lose the game.');
+    } else {
+        console.log('The game is a tie!');
+    }
+    console.log('Thanks for playing!');
+    console.log(`Final Score: You ${humanScore} - ${computerScore} Computer`);
+    console.log('Goodbye!');
+    console.log('Feel free to play again!');
+}
 
-buttons.forEach(button => {
-    button.addEventListener("keydown", () => {
-        alert(button.id);
-    });
-});
-
+console.log('Welcome to Rock, Paper, Scissors!');
+playGame();
