@@ -1,28 +1,22 @@
-function getComputerChoice () {
+function getComputerChoice() {
     const choices = ['rock', 'paper', 'scissors'];
     const randomIndex = Math.floor(Math.random() * choices.length);
     return choices[randomIndex];
 }
 
-
-function getHumanChoice () {
-    const choices = ['rock', 'paper', 'scissors'];
-    const choice = prompt('Enter rock, paper, or scissors:');
-    if (choices.includes(choice)) {
-        return choice;
-    } else {
-        alert('Invalid choice. Please try again.');
-        return getHumanChoice();
-    }
-}
-
-
 let humanScore = 0;
 let computerScore = 0;
 
-function playRound (humanChoice, computerChoice) {
+const rockButton = document.getElementById('rock');
+const paperButton = document.getElementById('paper');
+const scissorsButton = document.getElementById('scissors');
+const result = document.getElementById('result');
+const resetButton = document.getElementById('reset');
+resetButton.style.display = 'none'; // Hide reset button initially
+
+function playRound(humanChoice, computerChoice) {
     if (humanChoice === computerChoice) {
-        return `It\'s a tie! ${humanChoice} vs ${computerChoice}`;
+        return `It's a tie! ${humanChoice} vs ${computerChoice}`;
     } else if (
         (humanChoice === 'rock' && computerChoice === 'scissors') ||
         (humanChoice === 'paper' && computerChoice === 'rock') ||
@@ -36,26 +30,37 @@ function playRound (humanChoice, computerChoice) {
     }
 }
 
-function playGame() {
-    for (let i = 0; i < 5; i++) {
-        const humanSelection = getHumanChoice();
-        const computerSelection = getComputerChoice();
-        console.log(playRound(humanSelection, computerSelection));
-        console.log(`Score: You ${humanScore} - ${computerScore} Computer`);
-    }
-
-    if (humanScore > computerScore) {
-        console.log('Congratulations! You win the game!');
-    } else if (humanScore < computerScore) {
-        console.log('Sorry! You lose the game.');
-    } else {
-        console.log('The game is a tie!');
-    }
-    console.log('Thanks for playing!');
-    console.log(`Final Score: You ${humanScore} - ${computerScore} Computer`);
-    console.log('Goodbye!');
-    console.log('Feel free to play again!');
+function endGame(message) {
+    result.innerHTML = `${message}<br>Final Score: You ${humanScore} - ${computerScore} Computer<br>Thanks for playing!<br>Feel free to play again!`;
+    rockButton.disabled = true;
+    paperButton.disabled = true;
+    scissorsButton.disabled = true;
+    resetButton.style.display = 'inline-block'; // Show reset button
 }
 
-console.log('Welcome to Rock, Paper, Scissors!');
-playGame();
+function handleRound(humanChoice) {
+    if (humanScore >= 5 || computerScore >= 5) return; // Prevent further play after game ends
+    const computerSelection = getComputerChoice();
+    const roundResult = playRound(humanChoice, computerSelection);
+    result.innerHTML = `${roundResult}<br>Score: You ${humanScore} - ${computerScore} Computer`;
+
+    if (humanScore === 5) {
+        endGame('You win!');
+    } else if (computerScore === 5) {
+        endGame('You lose!');
+    }
+}
+
+rockButton.addEventListener('click', () => handleRound('rock'));
+paperButton.addEventListener('click', () => handleRound('paper'));
+scissorsButton.addEventListener('click', () => handleRound('scissors'));
+
+resetButton.addEventListener('click', () => {
+    humanScore = 0;
+    computerScore = 0;
+    result.innerHTML = 'Game reset! Start playing again.';
+    rockButton.disabled = false;
+    paperButton.disabled = false;
+    scissorsButton.disabled = false;
+    resetButton.style.display = 'none'; // Hide reset button again
+});
